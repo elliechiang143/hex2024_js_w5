@@ -1,4 +1,4 @@
-let data = [
+let ticketData = [
   {
     "id": 0,
     "name": "肥宅心碎賞櫻3日",
