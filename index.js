@@ -1,11 +1,22 @@
+let ticketData = [];
 
+// LV 2
+axios.get('https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json')
+  .then(function (response) {
+    ticketData = response.data.data;
+    renderTicketCardList(ticketData);
+    changeSearchResultNumber(ticketData.length);
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
 
 // 本次搜尋共幾筆資料----------------------
 const searchResult = document.querySelector('#searchResult-text');
 function changeSearchResultNumber(result){
   searchResult.innerHTML = `本次搜尋共 ${result} 筆資料`
 }
-changeSearchResultNumber(ticketData.length);
+// changeSearchResultNumber(ticketData.length);
 // 本次搜尋共幾筆資料----------------------END
 
 
@@ -56,7 +67,8 @@ function renderTicketCardList(dataArray) {
   changeSearchResultNumber(dataArray.length)
 }
 // 載入頁面時渲染全部的資料
-renderTicketCardList(ticketData);
+// W6改為axios撈取API資料
+// renderTicketCardList(ticketData);
 // 渲染票券卡片----------------------------END
 
 
