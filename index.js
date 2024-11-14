@@ -1,9 +1,8 @@
 let ticketData = [];
-
-// LV 2
-axios.get('https://raw.githubusercontent.com/hexschool/js-training/main/travelApi.json')
+axios.get('https://raw.githubusercontent.com/hexschool/js-training/main/travelAPI-lv1.json')
   .then(function (response) {
-    ticketData = response.data.data;
+    ticketData = response.data;
+    renderAreaChart(ticketData);
     renderTicketCardList(ticketData);
     changeSearchResultNumber(ticketData.length);
   })
@@ -11,12 +10,61 @@ axios.get('https://raw.githubusercontent.com/hexschool/js-training/main/travelAp
     console.log(error);
   })
 
+function createAreaChartData(data){
+  const areaObj = {};
+  data.forEach(function(item){
+    if(areaObj[item.area] == undefined){
+      areaObj[item.area] = 1
+    }else{
+      areaObj[item.area] ++
+    }
+  })
+  // areaObj: {高雄: 1, 台北: 1, 台中: 1}
+
+  const areaAry = Object.keys(areaObj)
+  // areaAry: ['高雄', '台北', '台中']
+
+  const areaChartData = [];
+  areaAry.forEach(function(item){
+    const ary = []
+    ary.push(item, areaObj[item])
+    areaChartData.push(ary)
+  })
+  // console.log(areaChartData);
+  return areaChartData;
+}
+
+function renderAreaChart(ticketData){
+  const chart = c3.generate({
+    bindto: '#areaChart',
+    size: {
+      width: 160,
+      height: 160
+    },
+    data: {
+      columns: createAreaChartData(ticketData),
+      type : 'donut',
+      colors: {
+        '台北': '#26C0C7',
+        '台中': '#5151D3',
+        '高雄': '#E68618',
+      }
+    },
+    donut: {
+        title: "套票地區比重",
+        width: 10,
+        label: {
+          show: false
+        }
+    }
+  });
+}
+
 // 本次搜尋共幾筆資料----------------------
 const searchResult = document.querySelector('#searchResult-text');
 function changeSearchResultNumber(result){
   searchResult.innerHTML = `本次搜尋共 ${result} 筆資料`
 }
-// changeSearchResultNumber(ticketData.length);
 // 本次搜尋共幾筆資料----------------------END
 
 
@@ -67,8 +115,7 @@ function renderTicketCardList(dataArray) {
   changeSearchResultNumber(dataArray.length)
 }
 // 載入頁面時渲染全部的資料
-// W6改為axios撈取API資料
-// renderTicketCardList(ticketData);
+renderTicketCardList(ticketData);
 // 渲染票券卡片----------------------------END
 
 
@@ -207,6 +254,7 @@ function addTicket(){
       clearInput();
       clearMessage();
       renderTicketCardList(ticketData);
+      renderAreaChart(ticketData);
     }
   })
 }
